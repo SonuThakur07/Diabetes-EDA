@@ -8,7 +8,7 @@ import pickle
 st.set_page_config(
     page_title="Diabetes Predictor",
     page_icon="🩺",
-    layout="centered"
+    layout="wide"
 )
 
 # ==========================================
@@ -37,84 +37,79 @@ st.markdown("""
     background:#eef3f7;
 }
 
-/* HIDE STREAMLIT */
+/* REMOVE STREAMLIT STUFF */
 #MainMenu, footer, header{
     visibility:hidden;
 }
 
-/* REMOVE TOP SPACE */
+/* PAGE WIDTH */
 .block-container{
-    padding-top:2rem;
+    max-width:700px !important;
+    padding-top:40px;
 }
 
 /* CARD */
-.auth-box{
+.card{
     background:white;
-    width:520px;
-    padding:45px;
-    border-radius:24px;
-    margin:auto;
-    margin-top:50px;
+    padding:50px;
+    border-radius:28px;
     box-shadow:0 10px 35px rgba(0,0,0,0.08);
 }
 
 /* TITLE */
-.auth-title{
+.title{
     text-align:center;
-    font-size:54px;
+    font-size:58px;
     font-weight:800;
     background:linear-gradient(to right,#2563eb,#06b6d4);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
-    margin-bottom:10px;
+    margin-bottom:15px;
 }
 
 /* SUBTITLE */
-.auth-subtitle{
+.subtitle{
     text-align:center;
     color:#6b7280;
-    font-size:20px;
+    font-size:21px;
     margin-bottom:35px;
 }
 
-/* LABEL */
+/* LABELS */
 label{
-    font-size:17px !important;
+    font-size:16px !important;
     font-weight:700 !important;
     color:#111827 !important;
 }
 
-/* INPUT */
+/* INPUT BOX */
 .stTextInput input{
-    height:55px !important;
-    border-radius:12px !important;
+    height:58px !important;
+    border-radius:14px !important;
     border:1px solid #d1d5db !important;
-    padding-left:15px !important;
     font-size:17px !important;
+    padding-left:15px !important;
 }
 
-/* MAIN BUTTON */
-.main-btn button{
+/* BUTTON */
+div.stButton > button{
     width:100%;
-    height:55px;
+    height:58px;
     border:none;
-    border-radius:12px;
+    border-radius:14px;
     background:linear-gradient(to right,#2563eb,#06b6d4);
     color:white;
     font-size:20px;
     font-weight:700;
+    margin-top:10px;
 }
 
-.main-btn button:hover{
-    color:white;
-}
-
-/* SMALL TEXT */
-.bottom-text{
+/* BOTTOM TEXT */
+.bottom{
     text-align:center;
-    margin-top:22px;
-    color:#6b7280;
+    margin-top:25px;
     font-size:17px;
+    color:#6b7280;
 }
 
 .blue{
@@ -122,10 +117,10 @@ label{
     font-weight:700;
 }
 
-/* DASHBOARD TITLE */
+/* DASHBOARD */
 .dashboard-title{
     text-align:center;
-    font-size:48px;
+    font-size:52px;
     font-weight:800;
     background:linear-gradient(to right,#2563eb,#06b6d4);
     -webkit-background-clip:text;
@@ -133,11 +128,11 @@ label{
     margin-bottom:10px;
 }
 
-.dashboard-subtitle{
+.dashboard-sub{
     text-align:center;
     color:#6b7280;
     font-size:20px;
-    margin-bottom:35px;
+    margin-bottom:30px;
 }
 
 /* RESULT */
@@ -145,48 +140,48 @@ label{
     background:#fee2e2;
     color:#b91c1c;
     padding:25px;
-    border-radius:16px;
+    border-radius:18px;
     text-align:center;
     font-size:28px;
     font-weight:700;
-    margin-top:20px;
+    margin-top:25px;
 }
 
 .result-low{
     background:#dcfce7;
     color:#166534;
     padding:25px;
-    border-radius:16px;
+    border-radius:18px;
     text-align:center;
     font-size:28px;
     font-weight:700;
-    margin-top:20px;
+    margin-top:25px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# LOGIN / SIGNUP
+# LOGIN / SIGNUP PAGE
 # ==========================================
 if not st.session_state.logged_in:
 
-    st.markdown("<div class='auth-box'>", unsafe_allow_html=True)
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
 
     # LOGIN PAGE
     if not st.session_state.show_signup:
 
         st.markdown(
-            "<div class='auth-title'>Welcome Back</div>",
+            "<div class='title'>Welcome Back</div>",
             unsafe_allow_html=True
         )
 
         st.markdown(
-            "<div class='auth-subtitle'>Please sign in to access your health dashboard</div>",
+            "<div class='subtitle'>Please sign in to access your health dashboard</div>",
             unsafe_allow_html=True
         )
 
-        username = st.text_input(
+        email = st.text_input(
             "Email Address",
             placeholder="name@example.com"
         )
@@ -197,17 +192,13 @@ if not st.session_state.logged_in:
             placeholder="••••••••"
         )
 
-        st.markdown("<div class='main-btn'>", unsafe_allow_html=True)
-
         if st.button("Sign In"):
             st.session_state.logged_in = True
             st.rerun()
 
-        st.markdown("</div>", unsafe_allow_html=True)
-
         st.markdown(
             """
-            <div class='bottom-text'>
+            <div class='bottom'>
             Don't have an account?
             <span class='blue'> Sign Up</span>
             </div>
@@ -223,37 +214,35 @@ if not st.session_state.logged_in:
     else:
 
         st.markdown(
-            "<div class='auth-title'>Create Account</div>",
+            "<div class='title'>Create Account</div>",
             unsafe_allow_html=True
         )
 
         st.markdown(
-            "<div class='auth-subtitle'>Join us to start tracking your health data securely</div>",
+            "<div class='subtitle'>Join us to start tracking your health data securely</div>",
             unsafe_allow_html=True
         )
 
-        new_user = st.text_input(
+        new_email = st.text_input(
             "Email Address",
             placeholder="name@example.com"
         )
 
-        new_pass = st.text_input(
+        new_password = st.text_input(
             "Password",
             type="password",
             placeholder="Minimum 6 characters"
         )
 
-        confirm_pass = st.text_input(
+        confirm_password = st.text_input(
             "Confirm Password",
             type="password",
             placeholder="••••••••"
         )
 
-        st.markdown("<div class='main-btn'>", unsafe_allow_html=True)
-
         if st.button("Register"):
 
-            if new_pass == confirm_pass:
+            if new_password == confirm_password:
 
                 st.success("Account Created Successfully")
                 st.session_state.logged_in = True
@@ -262,11 +251,9 @@ if not st.session_state.logged_in:
             else:
                 st.error("Passwords do not match")
 
-        st.markdown("</div>", unsafe_allow_html=True)
-
         st.markdown(
             """
-            <div class='bottom-text'>
+            <div class='bottom'>
             Already have an account?
             <span class='blue'> Sign In</span>
             </div>
@@ -291,7 +278,7 @@ st.markdown(
 )
 
 st.markdown(
-    "<div class='dashboard-subtitle'>AI Powered Diabetes Risk Analysis System</div>",
+    "<div class='dashboard-sub'>AI Powered Diabetes Risk Analysis System</div>",
     unsafe_allow_html=True
 )
 
@@ -304,6 +291,9 @@ bmi = st.number_input("BMI", 10.0, 60.0, 25.0)
 dpf = st.number_input("Diabetes Pedigree Function", 0.0, 3.0, 0.5)
 age = st.number_input("Age", 1, 100, 30)
 
+# ==========================================
+# PREDICTION
+# ==========================================
 if st.button("Predict Diabetes Risk"):
 
     input_raw = pd.DataFrame({
