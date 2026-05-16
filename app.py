@@ -2,117 +2,180 @@ import streamlit as st
 import pandas as pd
 import pickle
 
-# ==============================
+# =====================================
 # PAGE CONFIG
-# ==============================
+# =====================================
 st.set_page_config(
     page_title="Diabetes Prediction App",
     page_icon="🩺",
-    layout="centered"
+    layout="wide"
 )
 
-# ==============================
-# LOAD MODEL & COLUMNS
-# ==============================
+# =====================================
+# LOAD MODEL
+# =====================================
 model = pickle.load(open("diabetes_model.pkl", "rb"))
 columns = pickle.load(open("columns.pkl", "rb"))
 
-# ==============================
+# =====================================
 # CUSTOM CSS
-# ==============================
+# =====================================
 st.markdown("""
 <style>
 
-.main {
-    background-color: #f4f6f9;
+.stApp {
+    background: linear-gradient(to right, #dbeafe, #f0f9ff);
 }
 
-.title {
+.main-title {
     text-align: center;
-    font-size: 42px;
+    font-size: 55px;
     font-weight: bold;
-    color: #2563eb;
+    color: #1e3a8a;
 }
 
-.subtitle {
+.sub-title {
     text-align: center;
-    color: gray;
+    font-size: 20px;
+    color: #475569;
     margin-bottom: 30px;
+}
+
+.glass {
+    background: rgba(255,255,255,0.55);
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(31,38,135,0.15);
+    margin-bottom: 25px;
 }
 
 .stButton>button {
     width: 100%;
-    background-color: #2563eb;
-    color: white;
-    font-size: 20px;
-    border-radius: 10px;
-    height: 3em;
+    height: 3.5em;
+    border-radius: 15px;
     border: none;
+    background: linear-gradient(to right, #2563eb, #1d4ed8);
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
 .stButton>button:hover {
-    background-color: #1d4ed8;
+    transform: scale(1.02);
+    background: linear-gradient(to right, #1d4ed8, #1e40af);
     color: white;
 }
 
-.result-box {
-    padding: 20px;
-    border-radius: 10px;
+.result-high {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 30px;
+    border-radius: 18px;
     text-align: center;
-    font-size: 28px;
+    font-size: 34px;
     font-weight: bold;
+}
+
+.result-low {
+    background: #dcfce7;
+    color: #166534;
+    padding: 30px;
+    border-radius: 18px;
+    text-align: center;
+    font-size: 34px;
+    font-weight: bold;
+}
+
+.footer {
+    text-align: center;
+    color: gray;
+    margin-top: 40px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# ==============================
-# TITLE
-# ==============================
-st.markdown("<div class='title'>🩺 Diabetes Prediction App</div>", unsafe_allow_html=True)
-
+# =====================================
+# HEADER
+# =====================================
 st.markdown(
-    "<div class='subtitle'>Predict diabetes risk using Machine Learning</div>",
+    "<div class='main-title'>🩺 Diabetes Prediction App</div>",
     unsafe_allow_html=True
 )
 
-# ==============================
+st.markdown(
+    "<div class='sub-title'>AI Powered Health Risk Prediction System</div>",
+    unsafe_allow_html=True
+)
+
+# =====================================
+# SIDEBAR
+# =====================================
+st.sidebar.title("ℹ️ About")
+
+st.sidebar.info(
+    """
+This application predicts diabetes risk using
+Machine Learning algorithms based on patient health data.
+"""
+)
+
+st.sidebar.success("Model Used: Random Forest")
+
+st.sidebar.markdown("### 🩺 Health Tips")
+st.sidebar.write("✅ Drink more water")
+st.sidebar.write("✅ Exercise daily")
+st.sidebar.write("✅ Maintain healthy BMI")
+st.sidebar.write("✅ Avoid excess sugar")
+
+# =====================================
 # INPUT SECTION
-# ==============================
-st.subheader("📋 Patient Details")
+# =====================================
+st.markdown("<div class='glass'>", unsafe_allow_html=True)
+
+st.subheader("📋 Enter Patient Details")
 
 col1, col2 = st.columns(2)
 
 with col1:
     preg = st.number_input("Pregnancies", 0, 20, 1)
-    glucose = st.number_input("Glucose", 50, 200, 120)
-    bp = st.number_input("Blood Pressure", 30, 120, 70)
-    skin = st.number_input("Skin Thickness", 0, 100, 20)
+    glucose = st.slider("Glucose", 50, 250, 120)
+    bp = st.slider("Blood Pressure", 30, 150, 70)
+    skin = st.slider("Skin Thickness", 0, 100, 20)
 
 with col2:
-    insulin = st.number_input("Insulin", 0, 300, 100)
-    bmi = st.number_input("BMI", 10.0, 60.0, 25.0)
-    dpf = st.number_input("Diabetes Pedigree Function", 0.0, 3.0, 0.5)
-    age = st.number_input("Age", 1, 100, 30)
+    insulin = st.slider("Insulin", 0, 900, 100)
+    bmi = st.slider("BMI", 10.0, 60.0, 25.0)
+    dpf = st.slider("Diabetes Pedigree Function", 0.0, 3.0, 0.5)
+    age = st.slider("Age", 1, 100, 30)
 
-# ==============================
+st.markdown("</div>", unsafe_allow_html=True)
+
+# =====================================
 # BMI STATUS
-# ==============================
+# =====================================
+st.markdown("<div class='glass'>", unsafe_allow_html=True)
+
+st.subheader("📊 BMI Analysis")
+
 if bmi < 18.5:
-    st.info("BMI Status: Underweight")
+    st.info("Underweight")
 elif bmi < 25:
-    st.success("BMI Status: Normal")
+    st.success("Normal BMI")
 elif bmi < 30:
-    st.warning("BMI Status: Overweight")
+    st.warning("Overweight")
 else:
-    st.error("BMI Status: Obese")
+    st.error("Obese")
 
-# ==============================
+st.markdown("</div>", unsafe_allow_html=True)
+
+# =====================================
 # PREDICTION
-# ==============================
-if st.button("🔍 Predict"):
+# =====================================
+if st.button("🔍 Predict Diabetes Risk"):
 
-    # Create input dataframe
     input_raw = pd.DataFrame({
         'Pregnancies': [preg],
         'Glucose': [glucose],
@@ -124,60 +187,65 @@ if st.button("🔍 Predict"):
         'Age': [age]
     })
 
-    # ==========================
     # Feature Engineering
-    # ==========================
     input_raw['Glucose_BMI'] = input_raw['Glucose'] * input_raw['BMI']
     input_raw['Insulin_Glucose'] = input_raw['Insulin'] * input_raw['Glucose']
     input_raw['Age_BMI'] = input_raw['Age'] * input_raw['BMI']
     input_raw['BMI_Squared'] = input_raw['BMI'] ** 2
 
-    # ==========================
     # Encoding
-    # ==========================
     input_encoded = pd.get_dummies(input_raw)
 
-    # ==========================
-    # Match columns
-    # ==========================
+    # Match Columns
     input_df = input_encoded.reindex(columns=columns, fill_value=0)
 
-    # ==========================
     # Prediction
-    # ==========================
     prediction = model.predict(input_df)
 
-    # ==========================
-    # Output
-    # ==========================
-    st.subheader("📊 Prediction Result")
+    st.markdown("<div class='glass'>", unsafe_allow_html=True)
+
+    st.subheader("📈 Prediction Result")
 
     if prediction[0] == 1:
 
         st.markdown(
             """
-            <div class='result-box'
-            style='background-color:#fee2e2;color:#b91c1c;'>
+            <div class='result-high'>
             ⚠️ High Risk of Diabetes
             </div>
             """,
             unsafe_allow_html=True
         )
 
+        st.warning(
+            "Please consult a healthcare professional."
+        )
+
     else:
 
         st.markdown(
             """
-            <div class='result-box'
-            style='background-color:#dcfce7;color:#166534;'>
+            <div class='result-low'>
             ✅ Low Risk of Diabetes
             </div>
             """,
             unsafe_allow_html=True
         )
 
-# ==============================
+        st.success("Healthy indicators detected.")
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# =====================================
 # FOOTER
-# ==============================
+# =====================================
 st.markdown("---")
-st.caption("Developed using Streamlit & Machine Learning")
+
+st.markdown(
+    """
+    <div class='footer'>
+        Developed using ❤️ Streamlit & Machine Learning
+    </div>
+    """,
+    unsafe_allow_html=True
+)
